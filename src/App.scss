@@ -1,0 +1,96 @@
+body {
+  font-family: "Inter", sans-serif;
+  color: #171A1F;
+  ;
+}
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #5113D7;
+}
+
+.main-container{
+  display: flex;
+  flex-direction: row;
+  padding: 3em;
+}
+
+
+.left-container {
+  flex: 3;    
+   .filtersContainer{
+      box-shadow: 0px 0px 1px 0px #171A1F12;
+      box-shadow: 0px 0px 2px 0px #171A1F1F;
+      padding: 10px;
+   }
+    .category{
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      text-align: left;
+      background-color: #F8F9FA;     
+      padding: 3px 12px 3px 12px;
+      border-radius: 4px;
+    }
+    .filter-checkbox-container{
+      padding: 0 12px 0 12px;
+    }
+    
+}
+
+.right-container {
+  flex: 9;
+  padding: 1em;
+  .half-containers {
+    display: flex;
+    flex-direction: row;
+    .image-div{
+      flex: 1;
+      .stock-image{
+        width: 90px;
+        height: auto;
+        border-radius: 8px;
+      }
+    }
+    .title-div{
+      flex: 9;
+      padding-left: 10px;
+      .title-date-cat{
+        margin: 0;
+        width: 100%;
+        .stock-date{
+          float: left;
+       }
+       .stock-category{
+         float: right;
+       }
+      }
+      .title-text{
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 22px;
+        text-align: left;
+        max-width: 94%;
+      }
+    }    
+  }
+  .description{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: left;
+  }  
+  .author{
+    margin-top: 0;
+    margin-bottom: 23px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 20px;
+  }
+  .border-bottom{
+    border-bottom: 1px solid #DEE1E6;
+    margin-bottom: 35px;
+  }
+}
