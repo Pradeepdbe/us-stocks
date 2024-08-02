@@ -23,6 +23,7 @@ function App() {
   const [authorFilter, setAuthorFilter] = useState<string[]>([]);
   const [dateSort, setDateSort] = useState<string>();
   const [titleSort, setTitleSort] = useState<string>();
+  const [filteredData, setFilteredData] = useState<StockDetails[]>([]);
 
 
 
@@ -33,6 +34,7 @@ function App() {
     .then(data => {
       console.log(data)
       setStockDetails(data);
+      setFilteredData(data);
       console.log("stockDetails",stockDetails);
       let categoryArr: string[] = [];
       let authorArr: string[] = [];
@@ -43,6 +45,7 @@ function App() {
       setCategory([...new Set(categoryArr)]);
       setAuthor([...new Set(authorArr)]);
     })
+    handleFilters()
   },[])
 
   // function formatDate(inputDate: string) {
@@ -59,21 +62,54 @@ function App() {
       
   // }
 
+
   const handleChangePage = (event: any, value: React.SetStateAction<number>) => {
     setPage(value);
   };
 
-  const handleCategoryFilters = (event: ChangeEvent<HTMLInputElement>,) =>{
+  const handleCategoryFilters = (event: ChangeEvent<HTMLInputElement>) =>{  
+    
+    let existing = categoryFilter;
 
+    if(event.target.checked){
+      setCategoryFilter([...existing, event.target.value]);
+    } else {
+      const index = existing.indexOf(event.target.value);
+      existing.splice(index, 1)
+      setCategoryFilter(existing)
+    } 
+      console.log(categoryFilter);
+  }
+  const handleAuthorFilters = (event: ChangeEvent<HTMLInputElement>) =>{
+      setAuthorFilter([...authorFilter, event.target.value])
+      console.log("authorFilter",authorFilter)
+      handleFilters()
+  }
+  const handleDateSort = (event: ChangeEvent<HTMLInputElement>) =>{
+      setDateSort(event.target.value)
+  }
+  const handleTitleSort = (event: ChangeEvent<HTMLInputElement>) =>{
+      setTitleSort(event.target.value)
   }
 
-  const handleAuthorFilters = (event: ChangeEvent<HTMLInputElement>,) =>{
-
+  const handleFilters = () =>{   
+   let filtered : StockDetails[] = stockDetails;
+   console.log(filtered)
+   console.log(categoryFilter)
+   
+    if(categoryFilter.length > 0){
+        filtered=filtered.filter((item)=> categoryFilter.includes(item.source))
+    }  
+    if(authorFilter.length > 0){
+        filtered=filtered.filter((item)=> authorFilter.includes(item.author))
+    }     
+    if(authorFilter.length == 0 && categoryFilter.length == 0){
+      filtered = stockDetails;
+    }
+    setFilteredData(filtered)
+    console.log("filtered", filtered)
   }
 
-  const handleSort = (event: ChangeEvent<HTMLInputElement>,) =>{
-
-  }
 
   return (
     <div className="App">
@@ -84,7 +120,7 @@ function App() {
                 <p className="category">Category</p>
                 <div className="filter-checkbox-container">
                   {category ? category.map((item,index)=>(
-                    <p key={index}><input type="checkbox" value={item} onChange={()=>handleCategoryFilters} />{item} </p>
+                    <p key={index}><input type="checkbox" value={item} onChange={(e)=>handleCategoryFilters(e)} />{item} </p>
                   )) : null}
                 </div>
              </div>
@@ -99,19 +135,19 @@ function App() {
              <div>
                 <p className="category">Sort By</p>
                 <div className="filter-checkbox-container">
-                    <p><input type="checkbox" value="Date" onChange={()=>handleSort} /> Date</p>
-                    <p><input type="checkbox" value="Title" onChange={()=>handleSort} /> Title</p>
+                    <p><input type="checkbox" value="Date" onChange={()=>handleDateSort} /> Date</p>
+                    <p><input type="checkbox" value="Title" onChange={()=>handleTitleSort} /> Title</p>
                 </div>
              </div>
           </div>
         </div>
         <div className="right-container">
         {(rowsPerPage > 0
-              ? stockDetails?.slice(
+              ? filteredData?.slice(
                   (page - 1) * rowsPerPage,
                   (page - 1) * rowsPerPage + rowsPerPage
                 )
-              : stockDetails)?.map((row, index)=>{
+              : filteredData)?.map((row, index)=>{
             return (<div className="border-bottom" key={index}>
             <div className="half-containers">
                   <div className="image-div">
@@ -135,7 +171,7 @@ function App() {
         })} 
          <Stack spacing={2} className="pagination">
             <Pagination
-             count={Math.ceil(stockDetails.length/rowsPerPage)}
+             count={Math.ceil(filteredData.length/rowsPerPage)}
              page={page}
              onChange={handleChangePage}
              />

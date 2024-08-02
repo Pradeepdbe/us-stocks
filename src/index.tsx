@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
