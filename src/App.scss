@@ -57,7 +57,10 @@ input[type="checkbox"] {
       padding-left: 10px;
       .title-date-cat{
         margin: 0;
-        width: 100%;
+        width: 100%;        
+        color: #565D6D;
+        font-size: 12px;
+        font-weight: 400;
         .stock-date{
           float: left;
        }
@@ -95,5 +98,23 @@ input[type="checkbox"] {
   }
   .pagination{
     float: right;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .main-container{   
+    padding: 3px!important;
+  }
+
+  .right-container {
+    .half-containers {
+      display: block!important;
+      .title-div{           
+        padding-left: 0!important; 
+        .title-text{ 
+          max-width: 100%!important;
+        }
+      }  
+    }
   }
 }

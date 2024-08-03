@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.scss';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
@@ -48,19 +47,23 @@ function App() {
     handleFilters()
   },[])
 
-  // function formatDate(inputDate: string) {
-  //   const date = new Date(inputDate);
-  
-  //   const options = {
-  //     year: "numeric",
-  //     month: "long",
-  //     day: "numeric",
-  //   };
+  useEffect(()=>{
+    handleFilters()
+  },[categoryFilter,authorFilter,dateSort,titleSort])
 
-    
-  //     return new Intl.DateTimeFormat("en-US", options).format(date);
+
+  function formatDate(inputDate: string) {
+    const date = new Date(inputDate);
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    const longMonthName = monthNames[date.getMonth()-1];
+    const year = date.getFullYear();
+    const day = date.getDay();
+    return `${longMonthName} ${day}, ${year}`;
       
-  // }
+  }
 
 
   const handleChangePage = (event: any, value: React.SetStateAction<number>) => {
@@ -70,44 +73,65 @@ function App() {
   const handleCategoryFilters = (event: ChangeEvent<HTMLInputElement>) =>{  
     
     let existing = categoryFilter;
-
     if(event.target.checked){
       setCategoryFilter([...existing, event.target.value]);
     } else {
       const index = existing.indexOf(event.target.value);
       existing.splice(index, 1)
       setCategoryFilter(existing)
+      handleFilters()
     } 
-      console.log(categoryFilter);
   }
   const handleAuthorFilters = (event: ChangeEvent<HTMLInputElement>) =>{
-      setAuthorFilter([...authorFilter, event.target.value])
-      console.log("authorFilter",authorFilter)
-      handleFilters()
+      let existing = authorFilter;
+
+    if(event.target.checked){
+        setAuthorFilter([...authorFilter, event.target.value]);
+    } else {
+        const index = existing.indexOf(event.target.value);
+        existing.splice(index, 1)
+        setAuthorFilter(existing)
+        handleFilters()
+    } 
   }
   const handleDateSort = (event: ChangeEvent<HTMLInputElement>) =>{
       setDateSort(event.target.value)
+      if(event.target.checked){
+        filteredData.sort(function(a,b){
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+        console.log(filteredData)
+        setFilteredData(filteredData)
+      }   
   }
   const handleTitleSort = (event: ChangeEvent<HTMLInputElement>) =>{
       setTitleSort(event.target.value)
+      if(event.target.checked){
+        filteredData.sort(function(a,b){
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+          return ('' + a.title).localeCompare(b.title);
+        });
+        console.log(filteredData)
+        setFilteredData(filteredData)
+      }   
   }
 
   const handleFilters = () =>{   
-   let filtered : StockDetails[] = stockDetails;
-   console.log(filtered)
-   console.log(categoryFilter)
-   
-    if(categoryFilter.length > 0){
-        filtered=filtered.filter((item)=> categoryFilter.includes(item.source))
-    }  
-    if(authorFilter.length > 0){
-        filtered=filtered.filter((item)=> authorFilter.includes(item.author))
-    }     
-    if(authorFilter.length == 0 && categoryFilter.length == 0){
-      filtered = stockDetails;
-    }
-    setFilteredData(filtered)
-    console.log("filtered", filtered)
+      let filtered : StockDetails[] = stockDetails;
+        if(categoryFilter.length > 0){
+            filtered=filtered.filter((item)=> categoryFilter.includes(item.source))
+        }  
+        if(authorFilter.length > 0){
+            filtered=filtered.filter((item)=> authorFilter.includes(item.author))
+        }     
+        if(authorFilter.length == 0 && categoryFilter.length == 0){
+          filtered = stockDetails;
+        }
+        setFilteredData(filtered);
+        setPage(1)
   }
 
 
@@ -128,15 +152,15 @@ function App() {
                 <p className="category">Author</p>
                 <div className="filter-checkbox-container">
                     {author ? author.map((item, index)=>(
-                        <p key={index}><input type="checkbox" value={item} onChange={()=>handleAuthorFilters}/>{item}</p>
+                        <p key={index}><input type="checkbox" value={item} onChange={(e)=>handleAuthorFilters(e)}/>{item}</p>
                     )) : null}
                 </div>
              </div>
              <div>
                 <p className="category">Sort By</p>
                 <div className="filter-checkbox-container">
-                    <p><input type="checkbox" value="Date" onChange={()=>handleDateSort} /> Date</p>
-                    <p><input type="checkbox" value="Title" onChange={()=>handleTitleSort} /> Title</p>
+                    <p><input type="checkbox" value="Date" onChange={(e)=>handleDateSort(e)} /> Date</p>
+                    <p><input type="checkbox" value="Title" onChange={(e)=>handleTitleSort(e)} /> Title</p>
                 </div>
              </div>
           </div>
@@ -155,7 +179,7 @@ function App() {
                   </div>
                   <div className="title-div">
                           <p className="title-date-cat">
-                            <span className="stock-date">{row.date}</span>
+                            <span className="stock-date">{formatDate(row.date)}</span>
                             <span className="stock-category">{row.source}</span>
                           </p><br/>
                           <div className="title-text" dangerouslySetInnerHTML={{ __html: row.title }} />
