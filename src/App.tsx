@@ -31,10 +31,8 @@ function App() {
     fetch("https://dummy-rest-api.specbee.site/api/v1/news")
     .then((res)=>res.json())
     .then(data => {
-      console.log(data)
       setStockDetails(data);
       setFilteredData(data);
-      console.log("stockDetails",stockDetails);
       let categoryArr: string[] = [];
       let authorArr: string[] = [];
       data.map((item : StockDetails) =>{
@@ -53,15 +51,19 @@ function App() {
 
 
   function formatDate(inputDate: string) {
-    const date = new Date(inputDate);
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
+    if(inputDate){
+        const date = new Date(inputDate);
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
 
-    const longMonthName = monthNames[date.getMonth()-1];
-    const year = date.getFullYear();
-    const day = date.getDay();
-    return `${longMonthName} ${day}, ${year}`;
+        const longMonthName = monthNames[date.getMonth()-1];
+        const year = date.getFullYear();
+        const day = date.getDay();
+        return `${longMonthName} ${day}, ${year}`;
+    }
+    return ""
+    
       
   }
 
@@ -98,11 +100,8 @@ function App() {
       setDateSort(event.target.value)
       if(event.target.checked){
         filteredData.sort(function(a,b){
-          // Turn your strings into dates, and then subtract them
-          // to get a value that is either negative, positive, or zero.
           return new Date(b.date).getTime() - new Date(a.date).getTime();
         });
-        console.log(filteredData)
         setFilteredData(filteredData)
       }   
   }
@@ -110,11 +109,8 @@ function App() {
       setTitleSort(event.target.value)
       if(event.target.checked){
         filteredData.sort(function(a,b){
-          // Turn your strings into dates, and then subtract them
-          // to get a value that is either negative, positive, or zero.
           return ('' + a.title).localeCompare(b.title);
         });
-        console.log(filteredData)
         setFilteredData(filteredData)
       }   
   }
