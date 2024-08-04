@@ -103,7 +103,9 @@ function App() {
           return new Date(b.date).getTime() - new Date(a.date).getTime();
         });
         setFilteredData(filteredData)
-      }   
+      } else{
+        setDateSort('')
+      } 
   }
   const handleTitleSort = (event: ChangeEvent<HTMLInputElement>) =>{
       setTitleSort(event.target.value)
@@ -112,7 +114,9 @@ function App() {
           return ('' + a.title).localeCompare(b.title);
         });
         setFilteredData(filteredData)
-      }   
+      } else {
+        setTitleSort('')
+      }  
   }
 
   const handleFilters = () =>{   
